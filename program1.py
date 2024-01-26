@@ -1,21 +1,24 @@
 import RPi.GPIO as GPIO    # Import Raspberry Pi GPIO library
 import sys
+import time
 from time import sleep     # Import the sleep from time module
 GPIO.setwarnings(False)    # Ignore warning for now
 GPIO.setmode(GPIO.BOARD)   # Use physical pin numbering
 
-ITER_COUNT = 5
+runTime = 20
 if (len(sys.argv) > 1):
-   ITER_COUNT = int(sys.argv[1])
-     
+   runTime = int(sys.argv[1])
+
 pin1 = 13
+pin2 = 11
 
 GPIO.setup(pin1, GPIO.OUT, initial=GPIO.LOW)   
+GPIO.setup(pin2, GPIO.IN) # sets pin as input
 
-while ITER_COUNT > 0: # Run ITER_COUNT times
-   ITER_COUNT -= 1 # Decrement counter
-   GPIO.output(pin1, GPIO.HIGH) # Turn on
-   sleep(1)                     # Sleep for 1 second
-   GPIO.output(pin1, GPIO.LOW)  # Turn off
-   sleep(1)                     # Sleep for 1 second
+t0 = time.time()
+while  (time.time() < t0+runTime): 
+   if GPIO.input(pin2):
+      GPIO.output(pin1,GPIO.HIGH)
+   if not(GPIO.input(pin2)):
+      GPIO.output(pin1,GPIO.LOW)
 GPIO.cleanup()
